@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MCF-Technologie-GmbH/opentap-livedata/schema/livedata-v1.schema.json",
+  "title": "OpenTap.LiveData payloads, format version 1",
+  "description": "The JSON payloads of OpenTap.LiveData. A transport carries them; subject or topic names are the transport's business.",
+  "$defs": {
+    "value": {
+      "description": "A value: number (TimeSpan in seconds; NaN/Infinity/-Infinity as text), boolean, text, time (ISO 8601 UTC text), enum (member name) or null.",
+      "type": ["number", "boolean", "string", "null"]
+    },
+    "sample": {
+      "type": "object",
+      "required": ["t", "v"],
+      "properties": {
+        "t": { "type": "string", "format": "date-time", "description": "When the value was reported or read." },
+        "v": { "$ref": "#/$defs/value" }
+      },
+      "additionalProperties": false
+    },
+    "valueDescription": {
+      "type": "object",
+      "required": ["name", "display", "type", "nullable", "mode"],
+      "properties": {
+        "name": { "type": "string", "description": "Key of the value, unique per device." },
+        "display": { "type": "string" },
+        "description": { "type": ["string", "null"] },
+        "group": { "type": "array", "items": { "type": "string" } },
+        "order": { "type": "number" },
+        "unit": { "type": ["string", "null"] },
+        "type": { "enum": ["number", "boolean", "text", "time", "enum"] },
+        "nullable": { "type": "boolean" },
+        "enumValues": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "required": ["value", "display"],
+            "properties": { "value": { "type": "string" }, "display": { "type": "string" } },
+            "additionalProperties": false
+          }
+        },
+        "mode": { "enum": ["push", "ask"] },
+        "intervalSeconds": { "type": ["number", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "batch": {
+      "type": "object",
+      "description": "All reports of one value of one device within one 100 ms interval, oldest first. Every report is kept, also when the value repeats.",
+      "required": ["v", "deviceId", "value", "samples"],
+      "properties": {
+        "v": { "const": 1 },
+        "deviceId": { "type": "string" },
+        "value": { "type": "string" },
+        "holder": { "type": ["string", "null"] },
+        "samples": { "type": "array", "items": { "$ref": "#/$defs/sample" } }
+      },
+      "additionalProperties": false
+    },
+    "description": {
+      "type": "object",
+      "required": ["v", "deviceId", "resource", "driverType", "values"],
+      "properties": {
+        "v": { "const": 1 },
+        "deviceId": { "type": "string" },
+        "resource": { "type": "string" },
+        "driverType": { "type": "string" },
+        "holder": { "type": ["string", "null"] },
+        "values": { "type": "array", "items": { "$ref": "#/$defs/valueDescription" } }
+      },
+      "additionalProperties": false
+    },
+    "latest": {
+      "type": "object",
+      "required": ["v", "deviceId", "values"],
+      "properties": {
+        "v": { "const": 1 },
+        "deviceId": { "type": "string" },
+        "holder": { "type": ["string", "null"] },
+        "values": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sample" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/batch" },
+    { "$ref": "#/$defs/description" },
+    { "$ref": "#/$defs/latest" }
+  ]
+}

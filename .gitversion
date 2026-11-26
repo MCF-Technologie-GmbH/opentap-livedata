@@ -1,0 +1,8 @@
+# Version of OpenTap.LiveData, read by the $(GitVersion) macro in package.xml.
+version = 1.0.0
+
+beta branch = main
+
+release branch = release[0-9x]*
+
+release tag = v?\d+\.\d+\.\d+

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    OpenTap.LiveData: live device data for OpenTAP drivers. It references only OpenTAP (and System.Text.Json, which is
+    part of every .NET runtime OpenTAP 9.x runs on). No transport is built in: a host (for example Tap.X) registers an
+    ILiveDataTransport; without one the package collects and sends nothing.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>OpenTap.LiveData</AssemblyName>
+    <RootNamespace>OpenTap.LiveData</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <OutputPath>$(MSBuildThisFileDirectory)..\..\bin\$(Configuration)\</OutputPath>
+    <OpenTapPackageDefinitionPath>package.xml</OpenTapPackageDefinitionPath>
+    <CreateOpenTapPackage>false</CreateOpenTapPackage>
+    <InstallCreatedOpenTapPackage>false</InstallCreatedOpenTapPackage>
+
+    <PackageId>OpenTap.LiveData</PackageId>
+    <Authors>MCF Technologie GmbH</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/MCF-Technologie-GmbH/opentap-livedata</RepositoryUrl>
+    <Description>Live device data for OpenTAP drivers: mark properties with [LiveData]; the package describes, collects and batches them every 100 ms as JSON and gives every resource a Device ID. A host registers the transport.</Description>
+    <PackageTags>OpenTAP;live data;instruments</PackageTags>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <CreateOpenTapPackage>true</CreateOpenTapPackage>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+</Project>

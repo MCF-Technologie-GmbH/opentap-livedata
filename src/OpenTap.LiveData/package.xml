@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OpenTap.LiveData (MIT): [LiveData], [DeviceFunction], the Device ID of every resource, the collector that batches
+  values every 100 ms, and the transport and publish gate interfaces a host implements.
+-->
+<Package Name="OpenTap.LiveData"
+         xmlns="http://opentap.io/schemas/package"
+         Version="$(GitVersion)"
+         OS="Windows,Linux,MacOS"
+         InfoLink="https://github.com/MCF-Technologie-GmbH/opentap-livedata">
+  <Description>Live device data for OpenTAP drivers. Mark properties with [LiveData]; the package describes them, collects every change and every 100 ms hands one batch per value to the transport the host registers (JSON). Every instrument and DUT gets a Device ID that is saved with the Bench. Without a registered transport nothing is collected or sent.</Description>
+  <Dependencies>
+    <PackageDependency Package="OpenTAP" Version="^9.32" />
+  </Dependencies>
+  <Files>
+    <File Path="Packages/OpenTap.LiveData/OpenTap.LiveData.dll" SourcePath="OpenTap.LiveData.dll">
+      <SetAssemblyInfo Attributes="Version" />
+      <!-- part of every .NET runtime OpenTAP 9.x runs on -->
+      <IgnoreDependency>System.Text.Json</IgnoreDependency>
+    </File>
+  </Files>
+</Package>

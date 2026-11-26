@@ -1,0 +1,7 @@
+bin/
+obj/
+*.TapPackage
+*.nupkg
+.vs/
+*.user
+TestResults/
