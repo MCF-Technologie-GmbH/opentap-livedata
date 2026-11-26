@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -242,6 +243,26 @@ namespace OpenTap.LiveData
             return number;
         }
 
+        private static readonly object _suggestionLock = new();
+        private static Func<object, IEnumerable<string>>[] _suggestionSources = Array.Empty<Func<object, IEnumerable<string>>>();
+
+        /// <summary>
+        /// Adds Device IDs the field offers for a resource beyond the loaded Bench, for example the IDs a host knows from other
+        /// computers. A source that throws is skipped.
+        /// </summary>
+        public static void RegisterSuggestions(Func<object, IEnumerable<string>> source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            lock (_suggestionLock)
+                if (Array.IndexOf(_suggestionSources, source) < 0) _suggestionSources = _suggestionSources.Concat(new[] { source }).ToArray();
+        }
+
+        /// <summary>Removes a source added with <see cref="RegisterSuggestions"/>.</summary>
+        public static void UnregisterSuggestions(Func<object, IEnumerable<string>> source)
+        {
+            lock (_suggestionLock) _suggestionSources = _suggestionSources.Where(s => s != source).ToArray();
+        }
+
         /// <summary>The Device IDs of the resources in the loaded Bench (instruments and DUTs), without duplicates, sorted.</summary>
         public static IReadOnlyList<string> KnownIds()
         {
@@ -254,6 +275,25 @@ namespace OpenTap.LiveData
             catch
             {
                 // settings not loaded (a process without a Bench): nothing to offer
+            }
+            return ids.ToList();
+        }
+
+        /// <summary>The Device IDs the field of <paramref name="resource"/> offers: <see cref="KnownIds()"/> and the registered sources'.</summary>
+        public static IReadOnlyList<string> KnownIds(object resource)
+        {
+            var ids = new SortedSet<string>(KnownIds(), StringComparer.Ordinal);
+            foreach (var source in Volatile.Read(ref _suggestionSources))
+            {
+                try
+                {
+                    foreach (var id in source(resource) ?? Enumerable.Empty<string>())
+                        if (!string.IsNullOrWhiteSpace(id)) ids.Add(id.Trim());
+                }
+                catch
+                {
+                    // a host's source failed: offer the rest
+                }
             }
             return ids.ToList();
         }

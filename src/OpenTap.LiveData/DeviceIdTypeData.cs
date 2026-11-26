@@ -126,7 +126,7 @@ namespace OpenTap.LiveData
             public bool Writable => false;
             public bool Readable => true;
             public IEnumerable<object> Attributes => _attributes;
-            public object GetValue(object owner) => DeviceIdentity.KnownIds();
+            public object GetValue(object owner) => DeviceIdentity.KnownIds(owner);
             public void SetValue(object owner, object? value) => throw new InvalidOperationException(KnownIdsName + " is read-only");
         }
     }

@@ -111,6 +111,21 @@ namespace OpenTap.LiveData.Tests
             Assert.That(type.GetMembers().Count(m => m.Name == DeviceIdTypeData.DeviceIdName), Is.EqualTo(1));
         }
 
+        [Test]
+        public void AHostCanOfferMoreIdsInTheField()
+        {
+            System.Func<object, System.Collections.Generic.IEnumerable<string>> source = r => r is FakeMeter ? new[] { " PSU-9 ", "" } : throw new System.Exception("broken");
+            DeviceIdentity.RegisterSuggestions(source);
+            try
+            {
+                var member = TypeData.GetTypeData(new FakeMeter()).GetMember(DeviceIdTypeData.KnownIdsName)!;
+                Assert.That((System.Collections.Generic.IEnumerable<string>)member.GetValue(new FakeMeter())!, Does.Contain("PSU-9"));
+                Assert.That(() => DeviceIdentity.KnownIds(new FakeScpi()), Throws.Nothing, "a failing source is skipped");
+            }
+            finally { DeviceIdentity.UnregisterSuggestions(source); }
+            Assert.That(DeviceIdentity.KnownIds(new FakeMeter()), Does.Not.Contain("PSU-9"));
+        }
+
         private static string Serialize(object o)
         {
             using var ms = new MemoryStream();
