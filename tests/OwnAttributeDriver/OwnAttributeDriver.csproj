@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- A driver that declares its own copy of [LiveData] and does not reference OpenTap.LiveData (recognition by full name). -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+  </ItemGroup>
+</Project>

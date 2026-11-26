@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Unit tests of the package with only OpenTAP present: no Tap.X, no Runner, no ResourceHub, no NATS client. -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <OutputPath>$(MSBuildThisFileDirectory)..\..\bin\Tests\</OutputPath>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <ProjectReference Include="..\..\src\OpenTap.LiveData\OpenTap.LiveData.csproj" />
+    <ProjectReference Include="..\OwnAttributeDriver\OwnAttributeDriver.csproj" />
+  </ItemGroup>
+</Project>
