@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!--
-    OpenTap.LiveData: live device data for OpenTAP drivers. It references only OpenTAP (and System.Text.Json, which is
-    part of every .NET runtime OpenTAP 9.x runs on). No transport is built in: a host (for example Tap.X) registers an
-    ILiveDataTransport; without one the package collects and sends nothing.
+    OpenTap.LiveData: the public SDK for live device data. It holds only the attributes [LiveData] and [DeviceFunction]
+    and references nothing but .NET (netstandard2.0). A host that shows live data (Tap.X) finds the attributes by their
+    full name; where no such host is installed they do nothing. OpenTAP is referenced for packaging only (no assembly).
   -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -18,14 +18,14 @@
     <Authors>MCF Technologie GmbH</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/MCF-Technologie-GmbH/opentap-livedata</RepositoryUrl>
-    <Description>Live device data for OpenTAP drivers: mark properties with [LiveData]; the package describes, collects and batches them every 100 ms as JSON and gives every resource a Device ID. A host registers the transport.</Description>
+    <Description>Attributes for live device data in OpenTAP drivers: mark properties with [LiveData] and operator functions with [DeviceFunction]. A host such as Tap.X shows them live; without one they do nothing.</Description>
     <PackageTags>OpenTAP;live data;instruments</PackageTags>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <CreateOpenTapPackage>true</CreateOpenTapPackage>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <!-- the OpenTAP package build only: no compile-time or run-time reference -->
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" ExcludeAssets="compile;runtime" PrivateAssets="all" />
   </ItemGroup>
 </Project>

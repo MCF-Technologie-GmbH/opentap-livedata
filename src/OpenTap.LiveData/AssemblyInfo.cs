@@ -5,4 +5,3 @@ using System.Reflection;
 [assembly: AssemblyProduct("OpenTap.LiveData")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("OpenTap.LiveData.Tests")]
